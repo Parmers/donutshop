@@ -1,2 +1,0 @@
-# pyThotties
-a python 
