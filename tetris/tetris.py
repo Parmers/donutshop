@@ -7,6 +7,7 @@ import random
 import sys
 import socket
 import urllib
+import urllib.request
 import re
 
 intro_str = [
@@ -669,8 +670,8 @@ def get_local_ip():
 
 
 def get_public_ip():
-    return tuple(re.findall("\"ip\":\"([\d\.]+)\"",
-                            urllib.URLopener().open('http://jsonip.com/').read()) + [0])
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
 
 def intro(stdscr):
@@ -727,7 +728,7 @@ def play_multi(stdscr):
     x, y = relx(.5) - 20, rely(.5) - 6
     try:
         stdscr.addstr(y + 2, x + 4, "PUBLIC IP:".ljust(20) +
-                      "%s:%i" % get_public_ip(), curses.color_pair(1))
+                      "%s" % get_public_ip(), curses.color_pair(1))
     except:
         stdscr.addstr(y + 2, x + 4, "PUBLIC IP:".ljust(20) +
                       "ERR: Not Found", curses.color_pair(1))
