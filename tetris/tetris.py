@@ -139,6 +139,24 @@ class Blocks():
          (0, 1, 0, 0),
          (0, 0, 0, 0)),
     )
+    U_BLOCK = (             # New Block!
+       ((1, 1, 1, 0),
+        (1, 0, 1, 0),
+        (0, 0, 0, 0),
+        (0, 0, 0, 0)),
+       ((1, 1, 0, 0),
+        (0, 1, 0, 0),
+        (1, 1, 0, 0),
+        (0, 0, 0, 0)),
+       ((1, 0, 1, 0),
+        (1, 1, 1, 0),
+        (0, 0, 0, 0),
+        (0, 0, 0, 0)),
+       ((0, 1, 1, 0),
+        (0, 1, 0, 0),
+        (0, 1, 1, 0),
+        (0, 0, 0, 0)),
+    )
     SQ_BLOCK = (
         ((0, 1, 1, 0),
          (0, 1, 1, 0),
@@ -164,6 +182,7 @@ class Blocks():
         S_BLOCK: 4,
         RS_BLOCK: 5,
         T_BLOCK: 6,
+        U_BLOCK: 6,
         SQ_BLOCK: 7,
     }
     IDS = {
@@ -173,6 +192,7 @@ class Blocks():
         S_BLOCK: 4,
         RS_BLOCK: 5,
         T_BLOCK: 6,
+        U_BLOCK: 6,
         SQ_BLOCK: 7,
     }
     REVIDS = {v: k for k, v in IDS.items()}
@@ -259,7 +279,8 @@ class Tetris():
         self._falling_set = new_falling_set
         self.calc_shadow()
 
-    # /////////////////////// CHECK OPERATIONS  //////////////////////////////
+    # /////////////////////// CHECK OPERATIONS  //////////////////
+    # ////////////
 
     def check_falling_set(self):
         '''creates a set of y,x tuples that you need to check for this piece'''
@@ -271,6 +292,7 @@ class Tetris():
         '''checks all xy tuples, can't use falling set bc rot is different'''
         for y, x in [(y, x) for x in range(4) for y in range(4)]:
             ay = self.fy + y
+            
             ax = self.fx + x
             # not inside box OR collision
             if (self.falling_piece[(self.rot + 1) % 4][y][x] == 1
