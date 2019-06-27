@@ -587,7 +587,11 @@ def loop(stdscr, socket):
             dirty = False
             drop = False
             fast = False
+<<<<<<< refs/remotes/origin/master
             wait = 0.25
+=======
+            wait = 0.25 # speed at which pieces fall
+>>>>>>> Speed Update
 
             key = stdscr.getch()
             if key == ord('q'):

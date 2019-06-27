@@ -620,7 +620,7 @@ def loop(stdscr, socket):
                     # the important thing is that we are stopped
                     # OR we could set a flag that we WERE stopped and not
                     # send this
-                    print 'EXIT'
+                    print(EXIT)
 
                 thread.stopped.set()
                 thread.join()
