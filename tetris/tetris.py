@@ -560,7 +560,7 @@ def loop(stdscr, socket):
             dirty = False
             drop = False
             fast = False
-            wait = 0.1
+            wait = 0.25 # speed at which pieces fall
 
             key = stdscr.getch()
             if key == ord('q'):
