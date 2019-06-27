@@ -531,7 +531,7 @@ def loop(stdscr, socket):
             if socket:
                 key = stdscr.getch()
                 if key == ord(' '):
-                    socket.send("ready:%s/" % name)
+                    # socket.send("ready:%s/" % name)
                     game.ready(name)
 
                 with other.lock:
@@ -670,8 +670,10 @@ def get_local_ip():
 
 
 def get_public_ip():
-    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-    return external_ip
+    ip = urllib.request.urlopen('https://api.ipify.org?format=json').read().decode('utf8')
+    ip = ip.split(':')[1]
+    ip = ip.split('"')[1]
+    return ip
 
 
 def intro(stdscr):
