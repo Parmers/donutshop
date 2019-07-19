@@ -297,11 +297,22 @@ def main():
                 current_piece.y -= 1
                 change_piece = True
 
+        pause = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.display.quit()
                 quit()
+
+            if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_p:
+                        pause = True
+
+            while pause == True:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYUP:
+                        if event.key == pygame.K_p:
+                            pause = False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
