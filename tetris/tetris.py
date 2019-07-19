@@ -9,6 +9,10 @@ import socket
 import urllib
 import urllib.request
 import re
+import os
+
+#import pyaudio
+import wave
 
 intro_str = [
 '  ___            _         _ _      ',
@@ -231,6 +235,7 @@ class Tetris():
         self.playing = True
         self.stdscr.addstr(rely(0.5) + 11, relx(0.5) + self.remote * 22 - 3,
                            name, curses.color_pair(8))
+
 
     def clear_grid(self):
         self.grid = [[0 for _ in range(10)] for _ in range(20)]
@@ -854,3 +859,40 @@ def cli(stdscr):
 
 if __name__ == '__main__':
     stdscr = curses.wrapper(cli)
+
+######GET PATH OF MUSIC FILE
+#script_dir = os.path.dirname(__file__)
+#rel_path = "music/data.wav"
+#abs_file_path = os.path.join(script_dir, rel_path)
+
+
+
+
+
+##################################################AUDIO STREAM###################################################################
+#define stream chunk
+##chunk = 1024
+
+#open a wav format music
+##f = wave.open(r"/usr/share/sounds/alsa/Rear_Center.wav","rb")
+#instantiate PyAudio
+##p = pyaudio.PyAudio()
+#open stream
+#stream = p.open(format = p.get_format_from_width(f.getsampwidth()),
+ #               channels = f.getnchannels(),
+ #               rate = f.getframerate(),
+ #               output = True)
+#read data
+##data = f.readframes(chunk)
+
+#play stream
+##while data:
+ #   stream.write(data)
+ #   data = f.readframes(chunk)
+
+#stop stream
+##stream.stop_stream()
+##stream.close()
+
+#close PyAudio
+##p.terminate()
