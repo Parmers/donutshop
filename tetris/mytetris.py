@@ -131,7 +131,8 @@ X = [['.....',
       '.....']]
 
 shapes = [S, Z, I, O, J, L, T, X]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128), (0, 0, 0)]
+shape_colors = [(123, 104, 238), (0, 255, 255), (0, 255, 127), (238, 130, 238), (255, 255, 216), (255, 0, 255),
+                (255, 179, 71), (0, 0, 0)]
 #index 0 - 7 represent shape
 
 
@@ -279,6 +280,11 @@ def draw_hold_shape(shape, surface):
 
 def draw_window(surface):
     surface.fill((0,0,0))
+
+    background_image = pygame.image.load("donutwaves.png").convert()
+    #draw background first so its underneath the rest
+    surface.blit(background_image, [0,0])
+
     # Tetris Title
     font = pygame.font.SysFont('comicsans', 60)
     label = font.render('TETRIS', 1, (255,255,255))

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5ed65ff-973b-4178-b325-4d1558a35c94" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/tetris/mytetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/tetris/mytetris.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tetris/tetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/tetris/tetris.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tetris/.gitignore">
           <provider selected="true" editor-type-id="text-editor" />
@@ -20,22 +21,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="355" lean-forward="true" selection-start-line="355" selection-end-line="355" />
+            <state relative-caret-position="153">
+              <caret line="289" column="38" selection-start-line="289" selection-start-column="38" selection-end-line="289" selection-end-column="38" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tetris/tetris.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="598" column="21" selection-start-line="598" selection-start-column="21" selection-end-line="598" selection-end-column="21" />
-              <folding>
-                <element signature="e#18#59#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -45,7 +34,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>draw_text</find>
       <find>draw_</find>
       <find>next sha</find>
       <find>surface</find>
@@ -75,6 +63,7 @@
       <find>GET_SHAPE2</find>
       <find>get_shape</find>
       <find>togg</find>
+      <find>draw_wind</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -213,8 +202,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tetris/tetris.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="598" column="21" selection-start-line="598" selection-start-column="21" selection-end-line="598" selection-end-column="21" />
+        <state relative-caret-position="386">
+          <caret line="892" column="12" selection-start-line="892" selection-start-column="12" selection-end-line="892" selection-end-column="12" />
           <folding>
             <element signature="e#18#59#0" expanded="true" />
           </folding>
@@ -223,8 +212,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="355" lean-forward="true" selection-start-line="355" selection-end-line="355" />
+        <state relative-caret-position="153">
+          <caret line="289" column="38" selection-start-line="289" selection-start-column="38" selection-end-line="289" selection-end-column="38" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
