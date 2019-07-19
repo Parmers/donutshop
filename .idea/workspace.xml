@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b7ff611f-efd7-4400-8a61-7b114116b1df" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tetris/donutwaves.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tetris/Tetris" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tetris/tetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/tetris/tetris.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,12 +12,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tetris/Tetris.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3825">
-              <caret line="255" column="56" selection-start-line="255" selection-start-column="56" selection-end-line="255" selection-end-column="56" />
+            <state relative-caret-position="347">
+              <caret line="261" column="45" selection-start-line="261" selection-start-column="45" selection-end-line="261" selection-end-column="45" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -39,10 +38,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="149" />
-    <option name="y" value="30" />
-    <option name="width" value="1283" />
-    <option name="height" value="792" />
+    <option name="x" value="720" />
+    <option name="y" value="23" />
+    <option name="width" value="720" />
+    <option name="height" value="836" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -69,6 +68,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/tetris" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -139,21 +139,24 @@
       <updated>1563509203624</updated>
       <workItem from="1563509209817" duration="501000" />
       <workItem from="1563566067088" duration="3764000" />
+      <workItem from="1563571126166" duration="1392000" />
+      <workItem from="1563572569066" duration="195000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4265000" />
+    <option name="totallyTimeSpent" value="5852000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="149" y="30" width="1283" height="792" extended-state="0" />
+    <frame x="720" y="23" width="720" height="836" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25382757" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.4719764" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4995971" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4995971" weight="0.3293011" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -177,13 +180,13 @@
     <option name="version" value="1" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/donutshop$Tetris.coverage" NAME="Tetris Coverage Results" MODIFIED="1563570743072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tetris" />
+    <SUITE FILE_PATH="coverage/donutshop$Tetris.coverage" NAME="Tetris Coverage Results" MODIFIED="1563572763728" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tetris" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/tetris/Tetris.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3825">
-          <caret line="255" column="56" selection-start-line="255" selection-start-column="56" selection-end-line="255" selection-end-column="56" />
+        <state relative-caret-position="347">
+          <caret line="261" column="45" selection-start-line="261" selection-start-column="45" selection-end-line="261" selection-end-column="45" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

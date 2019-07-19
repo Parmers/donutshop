@@ -124,7 +124,8 @@ T = [['.....',
       '.....']]
 
 shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [(123, 104, 238), (0, 255, 255), (0, 255, 127), (238, 130, 238), (255, 255, 216), (255, 0, 255), (255, 179, 71)]
+color_names = ["choccy", "mint", "pink", "lemon", "cherry", "green", "purple"]
 
 # index 0 - 6 represent shape
 
@@ -235,8 +236,7 @@ def clear_rows(grid, locked):
 
 def draw_next_shape(shape, surface):
     font = pygame.font.SysFont('comicsans', 30)
-    label = font.render('Next Shape', 1, (255,255,255))
-    #label = font.render('Next Shape', 1, None)
+    label = font.render('Next Shape', 1, (0, 0, 0))
 
     sx = top_left_x + play_width + 50
     sy = top_left_y + play_height/2 - 100
@@ -252,13 +252,14 @@ def draw_next_shape(shape, surface):
 
 
 def draw_window(surface):
+
     surface.fill((0,0,0))
     background_image = pygame.image.load("donutwaves.png").convert()
+    #draw background first so its underneath the rest
     surface.blit(background_image, [0,0])
     # Tetris Title
     font = pygame.font.SysFont('comicsans', 60)
-    label = font.render('TETRIS', 1, (255,255,255))
-    #label = font.render('TETRIS', 1, None)
+    label = font.render('TETRIS', 1, (0, 0, 0))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
     for i in range(len(grid)):
@@ -267,7 +268,7 @@ def draw_window(surface):
 
     # draw grid and border
     draw_grid(surface, 20, 10)
-    pygame.draw.rect(surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5)
+    pygame.draw.rect(surface, (0, 255, 255), (top_left_x, top_left_y, play_width, play_height), 5)
     # pygame.display.update()
 
 
