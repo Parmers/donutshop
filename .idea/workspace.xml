@@ -20,8 +20,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="315" column="41" selection-end-line="406" selection-end-column="25" />
+            <state relative-caret-position="300">
+              <caret line="355" lean-forward="true" selection-start-line="355" selection-end-line="355" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -45,22 +45,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>game</find>
-      <find>game =</find>
-      <find>key =</find>
-      <find>pause</find>
       <find>draw_text</find>
       <find>draw_</find>
       <find>next sha</find>
       <find>surface</find>
       <find>DRAW_TEX</find>
       <find>next</find>
-      <find>Next Shape</find>
       <find>draw</find>
       <find>next_shape</find>
       <find>current_piece.x</find>
-      <find>get_shap</find>
       <find>hold</find>
+      <find>Next Shape</find>
+      <find>draw_next</find>
+      <find>draw_hold</find>
+      <find>get_sha</find>
+      <find>curr</find>
+      <find>get_blan</find>
+      <find>get_blank</find>
+      <find>shapes</find>
+      <find>get_shapes2</find>
+      <find>get_shapes</find>
+      <find>get</find>
+      <find>get_shap</find>
+      <find>hold_piece</find>
+      <find>next_piece</find>
+      <find>hold_pie</find>
+      <find>get_shape2</find>
+      <find>HOLD_PIECE =</find>
+      <find>GET_SHAPE2</find>
+      <find>get_shape</find>
+      <find>togg</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -83,7 +97,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="22" />
     <option name="width" value="697" />
@@ -190,7 +204,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" id="Run" order="3" side_tool="true" visible="true" weight="0.12178517" />
+      <window_info active="true" anchor="right" id="Run" order="3" side_tool="true" visible="true" weight="0.33963692" />
     </layout>
   </component>
   <component name="editorHistoryManager">
@@ -209,8 +223,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="315" column="41" selection-end-line="406" selection-end-column="25" />
+        <state relative-caret-position="300">
+          <caret line="355" lean-forward="true" selection-start-line="355" selection-end-line="355" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

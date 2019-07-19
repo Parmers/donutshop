@@ -124,9 +124,15 @@ T = [['.....',
       '..0..',
       '.....']]
 
-shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
-# index 0 - 6 represent shape
+X = [['.....',
+      '.....',
+      '.....',
+      '.....',
+      '.....']]
+
+shapes = [S, Z, I, O, J, L, T, X]
+shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128), (0, 0, 0)]
+#index 0 - 7 represent shape
 
 
 class Piece(object):
@@ -191,9 +197,14 @@ def check_lost(positions):
 
 def get_shape():
     global shapes, shape_colors
+    rand_num = random.randrange(6)
 
-    return Piece(5, 0, random.choice(shapes))
+    return Piece(5, 0, shapes[rand_num])
 
+def get_blank():
+    global shapes, shape_colors
+
+    return Piece(5, 0, shapes[7])
 
 def draw_text_middle(text, size, color, surface):
     font = pygame.font.SysFont('comicsans', size, bold=True)
@@ -250,6 +261,21 @@ def draw_next_shape(shape, surface):
 
     surface.blit(label, (sx + 10, sy- 30))
 
+def draw_hold_shape(shape, surface):
+    font = pygame.font.SysFont('comicsans', 30)
+    label = font.render('Hold Shape', 1, (255,255,255))
+
+    sx = top_left_x + play_width - 500
+    sy = top_left_y + play_height/2 - 100
+    format = shape.shape[shape.rotation % len(shape.shape)]
+
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30, 30, 30), 0)
+
+    surface.blit(label, (sx + 10, sy- 30))
 
 def draw_window(surface):
     surface.fill((0,0,0))
@@ -280,6 +306,7 @@ def main():
     run = True
     current_piece = get_shape()
     next_piece = get_shape()
+    hold_piece = get_blank()
     clock = pygame.time.Clock()
     fall_time = 0
 
@@ -325,6 +352,7 @@ def main():
                         next_piece = get_shape()
                     else:
                         current_piece = hold_piece
+                        hold_piece = get_blank()
 
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1
@@ -375,6 +403,7 @@ def main():
 
         draw_window(win)
         draw_next_shape(next_piece, win)
+        draw_hold_shape(hold_piece, win)
         pygame.display.update()
 
         # Check if user lost
