@@ -275,6 +275,7 @@ def main():
     locked_positions = {}  # (x,y):(255,0,0)
     grid = create_grid(locked_positions)
 
+    hold_toggle = False
     change_piece = False
     run = True
     current_piece = get_shape()
@@ -315,6 +316,16 @@ def main():
                             pause = False
 
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_h:
+                    current_piece.y = 0             # start hold piece at the top of window
+                    hold_toggle = not hold_toggle
+                    if hold_toggle:
+                        hold_piece = current_piece
+                        current_piece = next_piece
+                        next_piece = get_shape()
+                    else:
+                        current_piece = hold_piece
+
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1
                     if not valid_space(current_piece, grid):

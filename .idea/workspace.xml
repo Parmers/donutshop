@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c5ed65ff-973b-4178-b325-4d1558a35c94" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tetris/mytetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/tetris/mytetris.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,7 +21,7 @@
         <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="334" column="40" lean-forward="true" selection-start-line="334" selection-start-column="40" selection-end-line="334" selection-end-column="40" />
+              <caret line="315" column="41" selection-end-line="406" selection-end-column="25" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -50,6 +49,18 @@
       <find>game =</find>
       <find>key =</find>
       <find>pause</find>
+      <find>draw_text</find>
+      <find>draw_</find>
+      <find>next sha</find>
+      <find>surface</find>
+      <find>DRAW_TEX</find>
+      <find>next</find>
+      <find>Next Shape</find>
+      <find>draw</find>
+      <find>next_shape</find>
+      <find>current_piece.x</find>
+      <find>get_shap</find>
+      <find>hold</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -199,7 +210,7 @@
     <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="334" column="40" lean-forward="true" selection-start-line="334" selection-start-column="40" selection-end-line="334" selection-end-column="40" />
+          <caret line="315" column="41" selection-end-line="406" selection-end-column="25" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
