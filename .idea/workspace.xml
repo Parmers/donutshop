@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5ed65ff-973b-4178-b325-4d1558a35c94" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/tetris/mytetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/tetris/mytetris.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tetris/tetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/tetris/tetris.py" afterDir="false" />
-    </list>
+    <list default="true" id="c5ed65ff-973b-4178-b325-4d1558a35c94" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="289" column="38" selection-start-line="289" selection-start-column="38" selection-end-line="289" selection-end-column="38" />
+            <state relative-caret-position="71">
+              <caret line="279" lean-forward="true" selection-start-line="279" selection-end-line="279" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -86,7 +83,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="22" />
     <option name="width" value="697" />
@@ -212,8 +209,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tetris/mytetris.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="289" column="38" selection-start-line="289" selection-start-column="38" selection-end-line="289" selection-end-column="38" />
+        <state relative-caret-position="71">
+          <caret line="279" lean-forward="true" selection-start-line="279" selection-end-line="279" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
