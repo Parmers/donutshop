@@ -325,11 +325,11 @@ def main():
                     if not valid_space(current_piece, grid):
                         current_piece.y -= 1
 
-                '''if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:
                     while valid_space(current_piece, grid):
                         current_piece.y += 1
                     current_piece.y -= 1
-                    print(convert_shape_format(current_piece))'''  # todo fix
+                    print(convert_shape_format(current_piece))  # todo fix
 
         shape_pos = convert_shape_format(current_piece)
 
