@@ -1,902 +1,392 @@
-#!/usr/bin/python
-from threading import Thread, Lock, Event
-import curses
-import curses.textpad
-import time
+import pygame
 import random
-import sys
-import socket
-import urllib
-import urllib.request
-import re
-import os
 
-#import pyaudio
-import wave
+"""
+10 x 20 square grid
+shapes: S, Z, I, O, J, L, T
+represented in order by 0 - 6
+"""
 
-intro_str = [
-'  ___            _         _ _      ',
-' / _ \          | |       | ( )     ',
-'/ /_\ \___  __ _| |__   __| |/ ___  ',
-'|  _  / __|/ _` | `_ \ / _` | / __| ',
-'| | | \__ \ (_| | | | | (_| | \__ \ ',
-'\_| |_/___/\__,_|_| |_|\__,_| |___/ ',
-'                                    ',
-'                                    ',
-'______                  _   _____ _ ',
-'|  _  \                | | /  ___| |',
-'| | | |___  _ __  _   _| |_\ `--.| |__   ___  _ __  ',
-'| | | / _ \| `_ \| | | | __|`--. \ `_ \ / _ \| `_ \ ',
-'| |/ / (_) | | | | |_| | |_/\__/ / | | | (_) | |_) |',
-'|___/ \___/|_| |_|\__,_|\__\____/|_| |_|\___/| .__/ ',
-'                                             | |    ',
-'                                             |_|    ',
-]
+pygame.font.init()
 
+# GLOBALS VARS
+s_width = 800
+s_height = 700
+play_width = 300  # meaning 300 // 10 = 30 width per block
+play_height = 600  # meaning 600 // 20 = 20 height per blo ck
+block_size = 30
 
-class Blocks():
-    LN_BLOCK = (
-        ((0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 1, 0, 0)),
-        ((0, 0, 0, 0),
-         (1, 1, 1, 1),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 1, 0, 0)),
-        ((0, 0, 0, 0),
-         (1, 1, 1, 1),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0))
-    )
-    L_BLOCK = (
-        ((0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 0, 0),
-         (1, 1, 1, 0),
-         (1, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((1, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 1, 0),
-         (1, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-    )
-    RL_BLOCK = (
-        ((1, 0, 0, 0),
-         (1, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 1, 0),
-         (0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 0, 0),
-         (1, 1, 1, 0),
-         (0, 0, 1, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (0, 1, 0, 0),
-         (1, 1, 0, 0),
-         (0, 0, 0, 0)),
-    )
-    S_BLOCK = (
-        ((0, 0, 0, 0),
-         (0, 1, 1, 0),
-         (1, 1, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (0, 1, 1, 0),
-         (0, 0, 1, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 0, 0),
-         (0, 1, 1, 0),
-         (1, 1, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (0, 1, 1, 0),
-         (0, 0, 1, 0),
-         (0, 0, 0, 0)),
-    )
-    RS_BLOCK = (
-        ((0, 0, 0, 0),
-         (1, 1, 0, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 1, 0),
-         (0, 1, 1, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 0, 0),
-         (1, 1, 0, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0)),
-        ((0, 0, 1, 0),
-         (0, 1, 1, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0)),
-    )
-    T_BLOCK = (
-        ((1, 1, 1, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (1, 1, 0, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (1, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 0, 0),
-         (0, 1, 1, 0),
-         (0, 1, 0, 0),
-         (0, 0, 0, 0)),
-    )
-    U_BLOCK = (             # New Block!
-       ((1, 1, 1, 0),
-        (1, 0, 1, 0),
-        (0, 0, 0, 0),
-        (0, 0, 0, 0)),
-       ((1, 1, 0, 0),
-        (0, 1, 0, 0),
-        (1, 1, 0, 0),
-        (0, 0, 0, 0)),
-       ((1, 0, 1, 0),
-        (1, 1, 1, 0),
-        (0, 0, 0, 0),
-        (0, 0, 0, 0)),
-       ((0, 1, 1, 0),
-        (0, 1, 0, 0),
-        (0, 1, 1, 0),
-        (0, 0, 0, 0)),
-    )
-    SQ_BLOCK = (
-        ((0, 1, 1, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 1, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 1, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-        ((0, 1, 1, 0),
-         (0, 1, 1, 0),
-         (0, 0, 0, 0),
-         (0, 0, 0, 0)),
-    )
-    COLORS = {
-        LN_BLOCK: 7,
-        L_BLOCK: 2,
-        RL_BLOCK: 3,
-        S_BLOCK: 4,
-        RS_BLOCK: 5,
-        T_BLOCK: 6,
-        U_BLOCK: 6,
-        SQ_BLOCK: 7,
-    }
-    IDS = {
-        LN_BLOCK: 1,
-        L_BLOCK: 2,
-        RL_BLOCK: 3,
-        S_BLOCK: 4,
-        RS_BLOCK: 5,
-        T_BLOCK: 6,
-        U_BLOCK: 6,
-        SQ_BLOCK: 7,
-    }
-    REVIDS = {v: k for k, v in IDS.items()}
+top_left_x = (s_width - play_width) // 2
+top_left_y = s_height - play_height
+
+# SHAPE FORMATS
+
+S = [['.....',
+      '.....',
+      '..00.',
+      '.00..',
+      '.....'],
+     ['.....',
+      '..0..',
+      '..00.',
+      '...0.',
+      '.....']]
+
+Z = [['.....',
+      '.....',
+      '.00..',
+      '..00.',
+      '.....'],
+     ['.....',
+      '..0..',
+      '.00..',
+      '.0...',
+      '.....']]
+
+I = [['..0..',
+      '..0..',
+      '..0..',
+      '..0..',
+      '.....'],
+     ['.....',
+      '0000.',
+      '.....',
+      '.....',
+      '.....']]
+
+O = [['.....',
+      '.....',
+      '.00..',
+      '.00..',
+      '.....']]
+
+J = [['.....',
+      '.0...',
+      '.000.',
+      '.....',
+      '.....'],
+     ['.....',
+      '..00.',
+      '..0..',
+      '..0..',
+      '.....'],
+     ['.....',
+      '.....',
+      '.000.',
+      '...0.',
+      '.....'],
+     ['.....',
+      '..0..',
+      '..0..',
+      '.00..',
+      '.....']]
+
+L = [['.....',
+      '...0.',
+      '.000.',
+      '.....',
+      '.....'],
+     ['.....',
+      '..0..',
+      '..0..',
+      '..00.',
+      '.....'],
+     ['.....',
+      '.....',
+      '.000.',
+      '.0...',
+      '.....'],
+     ['.....',
+      '.00..',
+      '..0..',
+      '..0..',
+      '.....']]
+
+T = [['.....',
+      '..0..',
+      '.000.',
+      '.....',
+      '.....'],
+     ['.....',
+      '..0..',
+      '..00.',
+      '..0..',
+      '.....'],
+     ['.....',
+      '.....',
+      '.000.',
+      '..0..',
+      '.....'],
+     ['.....',
+      '..0..',
+      '.00..',
+      '..0..',
+      '.....']]
+
+shapes = [S, Z, I, O, J, L, T]
+shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+
+# index 0 - 6 represent shape
 
 
-class Tetris():
-    '''all the logic for a tetris game
-    '''
+class Piece(object):
+    rows = 20  # y
+    columns = 10  # x
 
-    def __init__(self, box, stdscr, remote):
-        self.playing = False
-        self.paused = False
-        self.remote = remote
-        # graphics
-        self.box = box
-        self.stdscr = stdscr
-        self.grid = [[0 for _ in range(10)] for _ in range(20)]
-        self.colors = [[8 for _ in range(10)] for _ in range(20)]
+    def __init__(self, column, row, shape):
+        self.x = column
+        self.y = row
+        self.shape = shape
+        self.color = shape_colors[shapes.index(shape)]
+        self.rotation = 0  # number from 0-3
 
-        self.grid_dirty = True
+def create_grid(locked_positions={}):
+    grid = [[(0,0,0) for x in range(10)] for x in range(20)]
 
-        # pieces
-        self.falling_piece = None
-        self.holding_piece = None
-        self.next_piece = list(Blocks.COLORS.keys())[random.randint(0, 6)]
-        self.rot, self.fy, self.fx, self.sy = (0, 0, 0, 0)
-        # lines to remove next tick
-        self.toremove = []
-        self.lines = 0
-        # network stuff
-        self.garbage = 0
-        self.kills = 0
-        self.lock = Lock()
-
-    def ready(self, name):
-        self.playing = True
-        self.stdscr.addstr(rely(0.5) + 11, relx(0.5) + self.remote * 22 - 3,
-                           name, curses.color_pair(8))
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if (j,i) in locked_positions:
+                c = locked_positions[(j,i)]
+                grid[i][j] = c
+    return grid
 
 
-    def clear_grid(self):
-        self.grid = [[0 for _ in range(10)] for _ in range(20)]
-        self.colors = [[8 for _ in range(10)] for _ in range(20)]
-        self.fy = 0
+def convert_shape_format(shape):
+    positions = []
+    format = shape.shape[shape.rotation % len(shape.shape)]
 
-    def new_piece(self):
-        '''chooses a random new piece for the top'''
-        self.falling_piece = self.next_piece
-        self.next_piece = list(Blocks.COLORS.keys())[random.randint(0, 6)]
-        self.rot = 0
-        self.fy = -1
-        self.fx = 5 - 2
-        # you hit the top, reset
-        if not self.check_down():
-            self.kills += 1
-            self.clear_grid()
-        self.fy = 0
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                positions.append((shape.x + j, shape.y + i))
 
-        self._shadow = []
-        self._falling_set = []
-        self.calc_dirty()
+    for i, pos in enumerate(positions):
+        positions[i] = (pos[0] - 2, pos[1] - 4)
 
-        if self.kills > 2:
-            self.playing = False
+    return positions
 
-    def calc_shadow(self):
-        '''calculates where the lookahead piece should go'''
-        old_fy = self.fy
-        while self.check_down():
-            self.fy += 1
-        self.sy = self.fy
-        self.fy = old_fy
 
-        new_shadow = [(t[0] + self.sy, t[1] + self.fx)
-                      for t in self.check_falling_set()]
-        for y, x in (set(self._shadow) - set(new_shadow)):
-            self.box.addstr(1 + y, 1 + x * 2, '  ', 8)
-        self._shadow = new_shadow
+def valid_space(shape, grid):
+    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
+    accepted_positions = [j for sub in accepted_positions for j in sub]
+    formatted = convert_shape_format(shape)
 
-    def calc_dirty(self):
-        new_falling_set = [(t[0] + self.fy, t[1] + self.fx)
-                           for t in self.check_falling_set()]
-        for y, x in (set(self._falling_set) - set(new_falling_set)):
-            self.box.addstr(1 + y, 1 + x * 2, '  ', 8)
-        self._falling_set = new_falling_set
-        self.calc_shadow()
-
-    # /////////////////////// CHECK OPERATIONS  //////////////////
-    # ////////////
-
-    def check_falling_set(self):
-        '''creates a set of y,x tuples that you need to check for this piece'''
-        return [] if not self.falling_piece else [(y, x) for x in range(4) for y in range(4) if self.falling_piece[self.rot % 4][y][x] == 1]
-        # return filter(lambda t: ,
-        #         [(y, x) for x in range(4) for y in range(4)]) if self.falling_piece else []
-
-    def check_rot(self):
-        '''checks all xy tuples, can't use falling set bc rot is different'''
-        for y, x in [(y, x) for x in range(4) for y in range(4)]:
-            ay = self.fy + y
-            
-            ax = self.fx + x
-            # not inside box OR collision
-            if (self.falling_piece[(self.rot + 1) % 4][y][x] == 1
-                and
-                ((ax < 0 or ax >= 10) or
-                 (0 <= ay < 20 and
-                  0 <= ax < 10
-                  and self.grid[ay][ax] == 1))):
+    for pos in formatted:
+        if pos not in accepted_positions:
+            if pos[1] > -1:
                 return False
-        return True
 
-    def check_side(self, side):
-        '''check falling set to see if we can move this piece left or right'''
-        for y, x in self.check_falling_set():
-            ay = self.fy + y
-            ax = self.fx + x + side
-            # not inside box OR collision
-            if (((ax < 0 or ax >= 10) or
-                 (0 <= ay < 20 and
-                  0 <= ax < 10
-                  and self.grid[ay][ax] == 1))):
-                return False
-        return True
-
-    def check_down(self):
-        '''can we move this piece down?'''
-        for y, x in self.check_falling_set():
-            ay = self.fy + y + 1
-            ax = self.fx + x
-            if ((ay >= 20 or
-                 (0 <= ay < 20 and
-                  0 <= ax < 10
-                  and self.grid[ay][ax] == 1))):
-                return False
-        return True
-
-    def commit_piece(self):
-        '''commit piece to grid, set lines to remove'''
-        for y, x in self.check_falling_set():
-            ay = self.fy + y
-            ax = self.fx + x
-            if (0 <= ay < 20 and
-                    0 <= ax < 10):
-                self.grid[ay][ax] = self.falling_piece[self.rot % 4][y][x]
-                self.colors[ay][ax] = Blocks.COLORS[self.falling_piece]
-        for y in range(20):
-            line = True
-            for x in range(10):
-                if self.grid[y][x] == 0:
-                    line = False
-                    break
-            if line:
-                self.toremove.append(y)
-                self.colors[y] = [1] * 10
-        self.grid_dirty = True
-
-    def hold_piece(self):
-        if self.holding_piece:
-            self.holding_piece, self.falling_piece = self.falling_piece, self.holding_piece
-        else:
-            self.holding_piece = self.falling_piece
-            self.falling_piece = Blocks.COLORS.keys()[random.randint(0, 6)]
-        self.calc_shadow()
-
-    def remove_lines(self):
-        '''remove the lines from grid you set last tick'''
-        for y in self.toremove:
-            self.colors.remove(self.colors[y])
-            self.colors.insert(0, [8] * 10)
-            self.grid.remove(self.grid[y])
-            self.grid.insert(0, [0] * 10)
-            self.lines += 1
-        self.toremove = []
-        self.grid_dirty = True
-
-    def add_garbage(self):
-        for y in range(1, 20):
-            self.grid[y - 1] = self.grid[y]
-            self.colors[y - 1] = self.colors[y]
-        self.grid[-1] = [1] * 10
-        self.colors[-1] = [1] * 10
-        self.grid[-1][random.randint(0, 9)] = 0
-        self.garbage += 1
-
-    # /////////////////////// DRAWING TO SCREEN  /////////////////////////////
-
-    def draw(self, iters=None):
-        '''draw all grid, falling piece, and shadow'''
-        if self.grid_dirty:
-            self.draw_grid(self.box)
-            self.grid_dirty = False
-
-        if not self.playing:
-            self.box.addstr(11, 7, "WAITING", curses.color_pair(8))
-
-        if self.playing and self.remote != 1:
-            self.draw_shadow(self.box)
-
-        self.draw_falling_piece(self.box)
-        self.draw_next_piece(self.stdscr)
-        self.draw_holding_piece(self.stdscr)
-
-        if self.paused:
-            self.stdscr.addstr(rely(0.5), relx(0.5) + 12 + self.remote * 22,
-                               "paused", curses.color_pair(8))
-        else:
-            self.stdscr.addstr(rely(0.5), relx(0.5) + 12 + self.remote * 22,
-                               "lines: %i" % self.lines, curses.color_pair(8))
-
-        self.stdscr.addstr(rely(0.5) + 1, relx(0.5) + 12 + self.remote * 22,
-                           "KO'd:  %i" % self.kills, curses.color_pair(8))
-        if iters:
-            self.stdscr.addstr(rely(0.5) + 2, relx(0.5) + 12 + self.remote * 22,
-                               ("iters:  %i" % iters).ljust(10), curses.color_pair(8))
-        self.box.refresh()
-
-    def draw_grid(self, box):
-        box.box()
-        for y in range(20):
-            for x in range(10):
-                box.addstr(1 + y, 1 + x * 2, '  ',
-                           curses.color_pair(self.colors[y][x]
-                                             if self.grid[y][x] == 1 else 8))
-
-    def draw_falling_piece(self, box):
-        if self.falling_piece:
-            for ay, ax in self._falling_set:
-                if (0 <= ay < 20 and
-                        0 <= ax < 10):
-                    box.addstr(1 + ay, 1 + ax * 2, '  ',
-                               curses.color_pair(Blocks.COLORS[self.falling_piece]))
-
-    def draw_next_piece(self, stdscr):
-        if self.next_piece:
-            for y, x in [(y, x) for x in range(4) for y in range(4)]:
-                stdscr.addstr(y + rely(0.5) - 10, x * 2 + relx(0.5) + 12 + self.remote * 22, '  ',
-                              curses.color_pair(Blocks.COLORS[self.next_piece]
-                                                if self.next_piece[0][y][x] == 1 else 8))
-
-    def draw_holding_piece(self, stdscr):
-        if self.holding_piece:
-            for y, x in [(y, x) for x in range(4) for y in range(4)]:
-                stdscr.addstr(y + rely(0.5) - 5, x * 2 + relx(0.5) + 12 + self.remote * 22, '  ',
-                              curses.color_pair(Blocks.COLORS[self.holding_piece]
-                                                if self.holding_piece[0][y][x] == 1 else 8))
-
-    def draw_shadow(self, box):
-        if self.falling_piece is None:
-            return
-        for sy, sx in self._shadow:
-            # if (0 <= ay < 20 and
-            #     0 <= ax < 10):
-            box.addstr(1 + sy, 1 + sx * 2, '[]', curses.color_pair(8))
-
-    # /////////////////////// NETWORKING  ////////////////////////////////
-
-    def serialize(self):
-        fullgrid = [str(self.grid[i / 10][i % 10]) for i in range(200)]
-        fullcolors = [str(self.colors[i / 10][i % 10]) for i in range(200)]
-        for y, x in self.check_falling_set():
-            fullgrid[10 * (self.fy + y) + (self.fx + x)] = str(1)
-            fullcolors[10 * (self.fy + y) + (self.fx + x)
-                       ] = str(Blocks.COLORS[self.falling_piece])
-
-        return ':'.join((str(self.lines),
-                         str(self.kills),
-                         str(Blocks.IDS.get(self.next_piece, "n")),
-                         str(Blocks.IDS.get(self.holding_piece, "n")),
-                         ''.join(fullgrid),
-                         ''.join(fullcolors))) + '/'
-
-    def deserialize(self, msg):
-        self.lines = int(msg[0]) if int(msg[0]) < 1000 else self.lines
-        self.kills = int(msg[1]) if int(msg[1]) < 1000 else self.kills
-        self.next_piece = None if msg[2] == 'n' else Blocks.REVIDS[int(msg[2])]
-        self.holding_piece = None if msg[
-            3] == 'n' else Blocks.REVIDS[int(msg[3])]
-        self.grid = [[int(msg[4][y * 10 + x]) for x in range(10)]
-                     for y in range(20)]
-        self.colors = [[int(msg[5][y * 10 + x])
-                        for x in range(10)] for y in range(20)]
+    return True
 
 
-class NetworkConnection(Thread):
-    '''run the network connection on another thread'''
+def check_lost(positions):
+    for pos in positions:
+        x, y = pos
+        if y < 1:
+            return True
+    return False
 
-    def __init__(self, game, other, socket):
-        Thread.__init__(self)
-        self.game = game
-        self.other = other
-        self.socket = socket
-        self.stopped = Event()
 
-    def run(self):
-        # wait for start signal
-        while 1:
-            if self.stopped.isSet():
-                break
+def get_shape():
+    global shapes, shape_colors
 
-            msg = self.socket.recv(500)
-            if msg.startswith("ready"):
-                with self.other.lock:
-                    self.other.ready(msg.split('/')[0].split(':')[1])
-                # move to next loop
-                break
+    return Piece(5, 0, random.choice(shapes))
 
-            time.sleep(0.1)
 
-        while 1:
-            if self.stopped.isSet():
-                break
+def draw_text_middle(text, size, color, surface):
+    font = pygame.font.SysFont('comicsans', size, bold=True)
+    label = font.render(text, 1, color)
 
-            msg = self.socket.recv(500)
-            if msg.endswith("stop"):
-                with self.game.lock:
-                    self.game.playing = False
-                with self.other.lock:
-                    self.other.playing = False
-                break
+    surface.blit(label, (top_left_x + play_width/2 - (label.get_width() / 2), top_left_y + play_height/2 - label.get_height()/2))
 
-            # update game with data
-            with self.other.lock:
+
+def draw_grid(surface, row, col):
+    sx = top_left_x
+    sy = top_left_y
+    for i in range(row):
+        pygame.draw.line(surface, (128,128,128), (sx, sy+ i*30), (sx + play_width, sy + i * 30))  # horizontal lines
+        for j in range(col):
+            pygame.draw.line(surface, (128,128,128), (sx + j * 30, sy), (sx + j * 30, sy + play_height))  # vertical lines
+
+
+def clear_rows(grid, locked):
+    # need to see if row is clear the shift every other row above down one
+
+    inc = 0
+    for i in range(len(grid)-1,-1,-1):
+        row = grid[i]
+        if (0, 0, 0) not in row:
+            inc += 1
+            # add positions to remove from locked
+            ind = i
+            for j in range(len(row)):
                 try:
-                    self.other.deserialize(msg.split('/')[0].split(':'))
+                    del locked[(j, i)]
                 except:
-                    pass
-
-            time.sleep(0.1)
-
-
-def loop(stdscr, socket):
-    stdscr.nodelay(1)
-    other = None
-
-    if socket:
-        box = curses.newwin(22, 22, rely(0.5) - 11, relx(0.5) - 11 - 22)
-        game = Tetris(box, stdscr, -1)
-        box2 = curses.newwin(22, 22, rely(0.5) - 11, relx(0.5) - 11 + 22)
-        other = Tetris(box2, stdscr, 1)
-        thread = NetworkConnection(game, other, socket)
-        thread.daemon = True
-        thread.start()
-    else:
-        # normal single player
-        box = curses.newwin(22, 22, rely(0.5) - 11, relx(0.5) - 11)
-        game = Tetris(box, stdscr, 0)
-
-    state = 0
-    iters = 0
-    last_iters = 0
-
-    while 1:
-        # with game.lock:
-        # wait until other person is ready as well
-        # time.sleep(0.02)
-
-        if state == 0:
-            if socket:
-                key = stdscr.getch()
-                if key == ord(' '):
-                    # socket.send("ready:%s/" % name)
-                    game.ready(name)
-
-                with other.lock:
-                    game.draw()
-                    other.draw()
-                    if game.playing and other.playing:
-                        state = 1
-            else:
-                # go right ahead
-                key = stdscr.getch()
-                if key == ord(' '):
-                    state = 1
-                    game.ready(name)
-                game.draw()
-
-            # if ready was set here, one time action
-            if state == 1:
-                game.kills = 0
-                if socket:
-                    with other.lock:
-                        other.kills = 0
-                game.new_piece()
-                last_update = time.time()
-
-        if state == 1:
-            dirty = False
-            drop = False
-            fast = False
-<<<<<<< refs/remotes/origin/master
-            wait = 0.25
-=======
-            wait = 0.25 # speed at which pieces fall
->>>>>>> Speed Update
-
-            key = stdscr.getch()
-            if key == ord('q'):
-                return
-            elif key == ord('p'):
-                if game.paused:
-                    game.paused = False
-                else:
-                    game.paused = True
-
-            if not game.paused:
-                if key == ord('c'):
-                    game.hold_piece()
-                elif key == ord(' '):
-                    game.fy = game.sy
-                    dirty = True
-                    drop = True
-                elif key == curses.KEY_DOWN:
-                    game.rot += 1
-                    dirty = True
-                elif key == curses.KEY_LEFT and game.check_side(-1):
-                    game.fx -= 1
-                    dirty = True
-                elif key == curses.KEY_RIGHT and game.check_side(1):
-                    game.fx += 1
-                    dirty = True
-                elif key == curses.KEY_UP and game.check_rot():
-                    game.rot += 1
-                    dirty = True
-
-                if drop or time.time() - last_update > (0.05 if fast else wait):
-                    last_update = time.time()
-                    game.remove_lines()
-                    if not game.check_down():
-                        game.commit_piece()
-                        game.new_piece()
-                    game.fy += 1
-                    dirty = True
-
-                    last_iters = iters
-                    iters = 0
-
-                if dirty:
-                    game.calc_dirty()
-
-            if socket:
-                pass
-                # if dirty:
-                #     socket.send(game.serialize())
-                # with other.lock:
-                #     other.draw()
-                #     game.draw()
-                #     # add garbage when the other gets lines
-                #     for x in range(other.lines - game.garbage):
-                #         game.add_garbage()
-            else:
-                iters += 1
-                game.draw(last_iters)
-
-            if not game.playing:
-                state = 2
-
-        # ending sequence game not playing
-        if state == 2:
-            state = 0
-            game.playing = False
-            game.clear_grid()
-            try:
-                other.playing = False
-                other.clear_grid()
-            except AttributeError:
-                pass
-            if socket:
-                try:
-                    socket.send('stop')
-                except:
-                    # this is okay, just means we received a signal to stop
-                    # and we are just now exiting the game loop
-                    # the important thing is that we are stopped
-                    # OR we could set a flag that we WERE stopped and not
-                    # send this
-                    print('EXIT')
-
-                thread.stopped.set()
-                thread.join()
-                # restart this thread
-                thread = NetworkConnection(game, other, socket)
-                thread.daemon = True
-                thread.start()
+                    continue
+    if inc > 0:
+        for key in sorted(list(locked), key=lambda x: x[1])[::-1]:
+            x, y = key
+            if y < ind:
+                newKey = (x, y + inc)
+                locked[newKey] = locked.pop(key)
 
 
-relx = lambda frac: int(curses.COLS * frac)
-rely = lambda frac: int(curses.LINES * frac)
+def draw_next_shape(shape, surface):
+    font = pygame.font.SysFont('comicsans', 30)
+    label = font.render('Next Shape', 1, (255,255,255))
+    #label = font.render('Next Shape', 1, None)
 
-name = sys.argv[1] if len(sys.argv) > 1 else "Player 1"
-addr = sys.argv[2] if len(sys.argv) > 2 else None
-port = int(sys.argv[3]) if len(sys.argv) > 3 else 8765
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height/2 - 100
+    format = shape.shape[shape.rotation % len(shape.shape)]
 
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30, 30, 30), 0)
 
-def get_local_ip():
-    '''find your own IP but gets only local address'''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("google.com", 80))
-    host = s.getsockname()
-    s.close()
-    return host
-
-
-def get_public_ip():
-    ip = urllib.request.urlopen('https://api.ipify.org?format=json').read().decode('utf8')
-    ip = ip.split(':')[1]
-    ip = ip.split('"')[1]
-    return ip
+    surface.blit(label, (sx + 10, sy- 30))
 
 
-def intro(stdscr):
-    curses.curs_set(0)
-    stdscr.border()
-    x, y = relx(.5) - len(intro_str[0]) // 2, rely(.5) - len(intro_str) // 2 - 6
-    m = [1] * 14 + [2] * 13 + [3] * 10 + [4] * 13 + [5] * 11 + [7] * 16
-    for i in range(len(intro_str)):
-        y += 1
-        for j in range(len(intro_str[i])):
-            c = curses.color_pair(m[j + 1] if i > 5 and i < 8 else m[j])
-            stdscr.addstr(y, x + j, intro_str[i][j], c)
+def draw_window(surface):
+    surface.fill((0,0,0))
+    background_image = pygame.image.load("donutwaves.png").convert()
+    surface.blit(background_image, [0,0])
+    # Tetris Title
+    font = pygame.font.SysFont('comicsans', 60)
+    label = font.render('TETRIS', 1, (255,255,255))
+    #label = font.render('TETRIS', 1, None)
 
-    win = curses.newwin(5, 5, 5, 5)
-    tb = curses.textpad.Textbox(win, insert_mode=True)
-    # text = tb.edit()
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            pygame.draw.rect(surface, grid[i][j], (top_left_x + j* 30, top_left_y + i * 30, 30, 30), 0)
 
-    stdscr.getch()
-    stdscr.refresh()
-    stdscr.clear()
-
-    # cofirm info
-    stdscr.border()
-    x, y = relx(.5) - 20, rely(.5) - 6
-    stdscr.addstr(y, x + 4, "NAME:".ljust(20) + name, curses.color_pair(1))
-    stdscr.refresh()
-
-    # ask for multiplayer or single player
-    multiplayer = False
-    stdscr.addstr(
-        y + 7, x + 4, "(m) for MULTIPLAYER / any other key for SINGLE PLAYER ", curses.color_pair(1))
-    key = stdscr.getch()
-    if key == ord('m'):
-        multiplayer = True
-    stdscr.addstr(y + 1, x + 4, "GAMEMODE:".ljust(20) +
-                  ("MULTIPLAYER" if multiplayer else "SINGLE PLAYER"), curses.color_pair(1))
-
-    if multiplayer:
-        play_multi(stdscr)
-    else:
-        stdscr.addstr(
-            y + 7, x + 4, "(q) to quit / any key to START".ljust(60), curses.color_pair(1))
-        key = stdscr.getch()
-        if key == ord('q'):
-            return
-
-        stdscr.refresh()
-        stdscr.clear()
-        set_solid_colors()
-        loop(stdscr, None)
+    # draw grid and border
+    draw_grid(surface, 20, 10)
+    pygame.draw.rect(surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5)
+    # pygame.display.update()
 
 
-def play_multi(stdscr):
-    x, y = relx(.5) - 20, rely(.5) - 6
-    try:
-        stdscr.addstr(y + 2, x + 4, "PUBLIC IP:".ljust(20) +
-                      "%s" % get_public_ip(), curses.color_pair(1))
-    except:
-        stdscr.addstr(y + 2, x + 4, "PUBLIC IP:".ljust(20) +
-                      "ERR: Not Found", curses.color_pair(1))
-    try:
-        stdscr.addstr(y + 3, x + 4, "LOCAL IP:".ljust(20) + "%s:%i" %
-                      get_local_ip(), curses.color_pair(1))
-    except:
-        stdscr.addstr(y + 3, x + 4, "LOCAL IP:".ljust(20) +
-                      "ERR: Not Found", curses.color_pair(1))
+def main():
+    global grid
 
-    # create socket and listen
-    # taken from sSMTP server mp3
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    locked_positions = {}  # (x,y):(255,0,0)
+    grid = create_grid(locked_positions)
 
-    if addr:
-        # client
-        stdscr.addstr(y + 7, x + 4, "(x) any key to connect to %s:%i".ljust(60) %
-                      (addr, port), curses.color_pair(1))
-        stdscr.getch()
-        stdscr.addstr(y + 6, x + 4, "Connecting to %s:%i" %
-                      (addr, port), curses.color_pair(1))
-        stdscr.addstr(y + 7, x + 4, "(^c) to quit".ljust(60),
-                      curses.color_pair(1))
-        stdscr.refresh()
-        try:
-            s.connect((addr, port))
-        except:
-            stdscr.addstr(
-                y + 6, x + 4, "Connection Failed.".ljust(60), curses.color_pair(1))
-            stdscr.refresh()
-            time.sleep(3)
-            return
-
-        stdscr.addstr(y + 6, x + 4, "Connected!".ljust(40),
-                      curses.color_pair(1))
-        stdscr.refresh()
-        stdscr.clear()
-        set_solid_colors()
-        loop(stdscr, s)
-
-    else:
-        # server
-        stdscr.addstr(
-            y + 7, x + 4, "(x) any key to start server".ljust(60), curses.color_pair(1))
-        stdscr.getch()
-        stdscr.addstr(
-            y + 6, x + 4, "Server waiting for connection.", curses.color_pair(1))
-        stdscr.addstr(y + 7, x + 4, "(^c) to quit".ljust(60),
-                      curses.color_pair(1))
-        stdscr.refresh()
-        try:
-            s.bind(('', port))
-            s.listen(5)
-            (clientsocket, address) = s.accept()
-        except:
-            stdscr.addstr(
-                y + 6, x + 4, "Connection Failed.".ljust(60), curses.color_pair(1))
-            stdscr.refresh()
-            time.sleep(3)
-            return
-
-        stdscr.addstr(y + 6, x + 4, "Connected!".ljust(40),
-                      curses.color_pair(1))
-        stdscr.refresh()
-        stdscr.clear()
-        set_solid_colors()
-        loop(stdscr, clientsocket)
-
-    # for server you need to send another socket
+    change_piece = False
+    run = True
+    current_piece = get_shape()
+    next_piece = get_shape()
+    clock = pygame.time.Clock()
+    fall_time = 0
 
 
-def set_normal_colors():
-    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
-    curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
-    curses.init_pair(4, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
-    curses.init_pair(5, curses.COLOR_CYAN, curses.COLOR_BLACK)
-    curses.init_pair(6, curses.COLOR_GREEN, curses.COLOR_BLACK)
-    curses.init_pair(7, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-    curses.init_pair(8, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    while run:
+        fall_speed = 0.27
+        #win.blit(background_image, [0, 0])
+        grid = create_grid(locked_positions)
+        fall_time += clock.get_rawtime()
+        clock.tick()
+
+        # PIECE FALLING CODE
+        if fall_time/1000 >= fall_speed:
+            fall_time = 0
+            current_piece.y += 1
+            if not (valid_space(current_piece, grid)) and current_piece.y > 0:
+                current_piece.y -= 1
+                change_piece = True
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.display.quit()
+                quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    current_piece.x -= 1
+                    if not valid_space(current_piece, grid):
+                        current_piece.x += 1
+
+                elif event.key == pygame.K_RIGHT:
+                    current_piece.x += 1
+                    if not valid_space(current_piece, grid):
+                        current_piece.x -= 1
+                elif event.key == pygame.K_UP:
+                    # rotate shape
+                    current_piece.rotation = current_piece.rotation + 1 % len(current_piece.shape)
+                    if not valid_space(current_piece, grid):
+                        current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)
+
+                if event.key == pygame.K_DOWN:
+                    # move shape down
+                    current_piece.y += 1
+                    if not valid_space(current_piece, grid):
+                        current_piece.y -= 1
+
+                '''if event.key == pygame.K_SPACE:
+                    while valid_space(current_piece, grid):
+                        current_piece.y += 1
+                    current_piece.y -= 1
+                    print(convert_shape_format(current_piece))'''  # todo fix
+
+        shape_pos = convert_shape_format(current_piece)
+
+        # add piece to the grid for drawing
+        for i in range(len(shape_pos)):
+            x, y = shape_pos[i]
+            if y > -1:
+                grid[y][x] = current_piece.color
+
+        # IF PIECE HIT GROUND
+        if change_piece:
+            for pos in shape_pos:
+                p = (pos[0], pos[1])
+                locked_positions[p] = current_piece.color
+            current_piece = next_piece
+            next_piece = get_shape()
+            change_piece = False
+
+            # call four times to check for multiple clear rows
+            clear_rows(grid, locked_positions)
 
 
-def set_solid_colors():
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_RED)
-    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_BLUE)
-    curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_MAGENTA)
-    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_CYAN)
-    curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_GREEN)
-    curses.init_pair(7, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-    curses.init_pair(8, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        draw_window(win)
+
+        draw_next_shape(next_piece, win)
+
+        pygame.display.update()
+
+        # Check if user lost
+        if check_lost(locked_positions):
+            run = False
+
+    draw_text_middle("You Lost", 40, (255,255,255), win)
+    pygame.display.update()
+    pygame.time.delay(2000)
 
 
-def cli(stdscr):
-    # curses.use_default_colors()
-    set_normal_colors()
-    intro(stdscr)
+def main_menu():
+    run = True
+    while run:
+        win.fill((0,0,0))
+        #screen.fill([255, 255, 255])
+        draw_text_middle('Press any key to begin.', 60, (255, 255, 255), win)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
 
-if __name__ == '__main__':
-    stdscr = curses.wrapper(cli)
-
-######GET PATH OF MUSIC FILE
-#script_dir = os.path.dirname(__file__)
-#rel_path = "music/data.wav"
-#abs_file_path = os.path.join(script_dir, rel_path)
+            if event.type == pygame.KEYDOWN:
+                main()
+    pygame.quit()
 
 
+win = pygame.display.set_mode((s_width, s_height))
+pygame.display.set_caption('Tetris')
 
-
-
-##################################################AUDIO STREAM###################################################################
-#define stream chunk
-##chunk = 1024
-
-#open a wav format music
-##f = wave.open(r"/usr/share/sounds/alsa/Rear_Center.wav","rb")
-#instantiate PyAudio
-##p = pyaudio.PyAudio()
-#open stream
-#stream = p.open(format = p.get_format_from_width(f.getsampwidth()),
- #               channels = f.getnchannels(),
- #               rate = f.getframerate(),
- #               output = True)
-#read data
-##data = f.readframes(chunk)
-
-#play stream
-##while data:
- #   stream.write(data)
- #   data = f.readframes(chunk)
-
-#stop stream
-##stream.stop_stream()
-##stream.close()
-
-#close PyAudio
-##p.terminate()
+main_menu()  # start game
