@@ -177,7 +177,7 @@ class Piece(object):
 
 
 def create_grid(locked_positions={}):
-    grid = [[(0,0,0) for x in range(10)] for x in range(20)]
+    grid = [[(78, 43, 33) for x in range(10)] for x in range(20)]
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -204,7 +204,7 @@ def convert_shape_format(shape):
 
 
 def valid_space(shape, grid):
-    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
+    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (78, 43, 33)] for i in range(20)]
     accepted_positions = [j for sub in accepted_positions for j in sub]
     formatted = convert_shape_format(shape)
 
@@ -251,16 +251,17 @@ def draw_grid(surface, row, col):
             pygame.draw.line(surface, (128,128,128), (sx + j * 30, sy), (sx + j * 30, sy + play_height))  # vertical lines
 
 
-def clear_rows(grid, locked):
+def clear_rows(grid, locked, score):
     # need to see if row is clear the shift every other row above down one
 
     inc = 0
     for i in range(len(grid)-1,-1,-1):
         row = grid[i]
-        if (0, 0, 0) not in row:
+        if (78, 43, 33) not in row:
             inc += 1
             # add positions to remove from locked
             ind = i
+            score += 1000
             for j in range(len(row)):
                 try:
                     del locked[(j, i)]
@@ -272,6 +273,8 @@ def clear_rows(grid, locked):
             if y < ind:
                 newKey = (x, y + inc)
                 locked[newKey] = locked.pop(key)
+
+    return score
 
 
 def draw_next_shape(shape, surface):
@@ -306,13 +309,23 @@ def draw_hold_shape(shape, surface):
 
     surface.blit(label, (sx + 10, sy- 30))
 
+def draw_score(surface, score):
+    font = pygame.font.SysFont('comicsans', 30)
+    label = font.render(('Score: ' + str(score)), 1, (255,255,255))
+
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height/2 - 300
+
+    surface.blit(label, (sx + 10, sy- 30))
+
+
 def draw_window(surface, background_image):
-    surface.fill((0,0,0))
+    surface.fill((78, 43, 33))
     surface.blit(background_image, [0, 0])
 
     # Tetris Title
     font = pygame.font.SysFont('comicsans', 60)
-    label = font.render('TETRIS', 1, (255,255,255))
+    label = font.render('TETRIS ON SPRINKLES', 1, (78, 43, 33))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
 
@@ -341,6 +354,7 @@ def main():
     locked_positions = {}  # (x,y):(255,0,0)
     grid = create_grid(locked_positions)
 
+    score = 0
     hold_toggle = False
     change_piece = False
     run = True
@@ -480,11 +494,12 @@ def main():
             change_piece = False
 
             # call four times to check for multiple clear rows
-            clear_rows(grid, locked_positions)
+            score = clear_rows(grid, locked_positions, score)
 
         draw_window(win, background_image)
         draw_next_shape(next_piece, win)
         draw_hold_shape(hold_piece, win)
+        draw_score(win, score)
         pygame.display.update()
 
 
@@ -500,7 +515,7 @@ def main():
 def main_menu():
     run = True
     while run:
-        win.fill((0,0,0))
+        win.fill((78, 43, 33))
         draw_text_middle('Press any key to begin.', 60, (255, 255, 255), win)
         pygame.display.update()
         for event in pygame.event.get():
