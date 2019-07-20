@@ -158,10 +158,10 @@ X = [['.....',
       '.....',
       '.....']]
 
-shapes = [S, Z, I, O, J, L, T, X]
-shape_colors = [(123, 104, 238), (0, 255, 255), (0, 255, 127), (238, 130, 238), (255, 255, 216), (255, 0, 255),
+shapes = [S, Z, I, O, D, U, J, L, T, X]
+shape_colors = [(0, 255, 127), (0, 255, 127), (123, 104, 238), (0, 255, 255), (0, 255, 127), (238, 130, 238), (255, 255, 216), (255, 0, 255),
                 (255, 179, 71), (0, 0, 0)]
-#index 0 - 7 represent shape
+#index 0 - 9 represent shape
 
 
 class Piece(object):
@@ -226,14 +226,14 @@ def check_lost(positions):
 
 def get_shape():
     global shapes, shape_colors
-    rand_num = random.randrange(6)
+    rand_num = random.randrange(8)
 
     return Piece(5, 0, shapes[rand_num])
 
 def get_blank():
     global shapes, shape_colors
 
-    return Piece(5, 0, shapes[7])
+    return Piece(5, 0, shapes[9])
 
 def draw_text_middle(text, size, color, surface):
     font = pygame.font.SysFont('comicsans', size, bold=True)
@@ -325,7 +325,7 @@ def draw_window(surface):
 
     # draw grid and border
     draw_grid(surface, 20, 10)
-    pygame.draw.rect(surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5)
+    pygame.draw.rect(surface, (0, 255, 255), (top_left_x, top_left_y, play_width, play_height), 5)
     # pygame.display.update()
 
 #
