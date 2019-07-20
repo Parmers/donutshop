@@ -251,7 +251,7 @@ def draw_grid(surface, row, col):
             pygame.draw.line(surface, (128,128,128), (sx + j * 30, sy), (sx + j * 30, sy + play_height))  # vertical lines
 
 
-def clear_rows(grid, locked):
+def clear_rows(grid, locked, score):
     # need to see if row is clear the shift every other row above down one
 
     inc = 0
@@ -261,6 +261,7 @@ def clear_rows(grid, locked):
             inc += 1
             # add positions to remove from locked
             ind = i
+            score += 1000
             for j in range(len(row)):
                 try:
                     del locked[(j, i)]
@@ -272,6 +273,8 @@ def clear_rows(grid, locked):
             if y < ind:
                 newKey = (x, y + inc)
                 locked[newKey] = locked.pop(key)
+
+    return score
 
 
 def draw_next_shape(shape, surface):
@@ -305,6 +308,23 @@ def draw_hold_shape(shape, surface):
                 pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30, 30, 30), 0)
 
     surface.blit(label, (sx + 10, sy- 30))
+
+def draw_score(surface, score):
+    font = pygame.font.SysFont('comicsans', 30)
+    #label = font.render(('Score: ', str(score)), 1, (255,255,255))
+    # print("Score is: ", score)
+
+    sx = top_left_x + play_width - 500
+    sy = top_left_y + play_height/2 - 100
+
+    # for i, line in enumerate(format):
+    #     row = list(line)
+    #     for j, column in enumerate(row):
+    #         if column == '0':
+    #             pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30, 30, 30), 0)
+
+    surface.blit(label, (sx + 10, sy- 30))
+
 
 def draw_window(surface, background_image):
     surface.fill((0,0,0))
@@ -341,6 +361,7 @@ def main():
     locked_positions = {}  # (x,y):(255,0,0)
     grid = create_grid(locked_positions)
 
+    score = 0
     hold_toggle = False
     change_piece = False
     run = True
@@ -480,11 +501,12 @@ def main():
             change_piece = False
 
             # call four times to check for multiple clear rows
-            clear_rows(grid, locked_positions)
+            score = clear_rows(grid, locked_positions, score)
 
         draw_window(win, background_image)
         draw_next_shape(next_piece, win)
         draw_hold_shape(hold_piece, win)
+        draw_score(win, score)
         pygame.display.update()
 
 
