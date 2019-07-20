@@ -279,7 +279,7 @@ def draw_next_shape(shape, surface):
     label = font.render('Next Shape', 1, (255,255,255))
 
     sx = top_left_x + play_width + 50
-    sy = top_left_y + play_height/2 - 100
+    sy = top_left_y + play_height/2 - 200
     format = shape.shape[shape.rotation % len(shape.shape)]
 
     for i, line in enumerate(format):
@@ -295,7 +295,7 @@ def draw_hold_shape(shape, surface):
     label = font.render('Hold Shape', 1, (255,255,255))
 
     sx = top_left_x + play_width - 500
-    sy = top_left_y + play_height/2 - 100
+    sy = top_left_y + play_height/2 - 200
     format = shape.shape[shape.rotation % len(shape.shape)]
 
     for i, line in enumerate(format):
@@ -306,12 +306,9 @@ def draw_hold_shape(shape, surface):
 
     surface.blit(label, (sx + 10, sy- 30))
 
-def draw_window(surface):
+def draw_window(surface, background_image):
     surface.fill((0,0,0))
-
-    background_image = pygame.image.load("donutwaves.png").convert()
-    #draw background first so its underneath the rest
-    surface.blit(background_image, [0,0])
+    surface.blit(background_image, [0, 0])
 
     # Tetris Title
     font = pygame.font.SysFont('comicsans', 60)
@@ -354,6 +351,8 @@ def main():
     fall_time = 0       # in secs
     game_time = 0       # in secs
 
+    background_image = pygame.image.load("donutwaves.png").convert()
+    #draw background first so its underneath the rest
 
     while run:
         fall_speed = 0.27
@@ -483,7 +482,7 @@ def main():
             # call four times to check for multiple clear rows
             clear_rows(grid, locked_positions)
 
-        draw_window(win)
+        draw_window(win, background_image)
         draw_next_shape(next_piece, win)
         draw_hold_shape(hold_piece, win)
         pygame.display.update()
