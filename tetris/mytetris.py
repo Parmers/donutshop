@@ -311,17 +311,10 @@ def draw_hold_shape(shape, surface):
 
 def draw_score(surface, score):
     font = pygame.font.SysFont('comicsans', 30)
-    #label = font.render(('Score: ', str(score)), 1, (255,255,255))
-    # print("Score is: ", score)
+    label = font.render(('Score: ' + str(score)), 1, (255,255,255))
 
-    sx = top_left_x + play_width - 500
-    sy = top_left_y + play_height/2 - 100
-
-    # for i, line in enumerate(format):
-    #     row = list(line)
-    #     for j, column in enumerate(row):
-    #         if column == '0':
-    #             pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30, 30, 30), 0)
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height/2 - 300
 
     surface.blit(label, (sx + 10, sy- 30))
 
