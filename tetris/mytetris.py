@@ -1,5 +1,7 @@
 import pygame
 import random
+import pathlib
+import os
 # import time
 
 """
@@ -377,7 +379,7 @@ def main():
 
 
 
-        ######## SPEED UP !!! zooooooooom ########
+        ######## SPEED UP !!! ``1ooooooom ########
 
 
         # countdown = 1000
@@ -438,6 +440,9 @@ def main():
                             pause = False
 
             if event.type == pygame.KEYDOWN:
+
+
+
                 if event.key == pygame.K_h:
                     current_piece.y = 0             # start hold piece at the top of window
                     hold_toggle = not hold_toggle
@@ -514,6 +519,9 @@ def main():
 
 def main_menu():
     run = True
+    # Declare musicOne on 531 after run=True
+    musicOn = False
+
     while run:
         win.fill((78, 43, 33))
         draw_text_middle('Press any key to begin.', 60, (255, 255, 255), win)
@@ -523,6 +531,19 @@ def main_menu():
                 run = False
 
             if event.type == pygame.KEYDOWN:
+                if (musicOn == False):
+                    # init music mixer
+                    # Music dir must be in /Users/samuelparmer/PycharmProjects/TetrisNew/venv/bin <- Location where filer is run from
+                    fn = pathlib.Path(__file__).parent
+                    filename = os.path.join(fn, 'Music/White_Field.wav')
+
+                    # Audio Code
+                    pygame.mixer.init()
+                    pygame.mixer.music.load(filename)
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.5)
+                    musicOn = True;
+
                 main()
     pygame.quit()
 
