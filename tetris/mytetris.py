@@ -152,9 +152,16 @@ T = [['.....',
       '..0..',
       '.....']]
 
-shapes = [S, Z, I, O, D, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 0, 0), (255, 255, 0),(128, 0, 128), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
-# index 0 - 6 represent shape
+X = [['.....',
+      '.....',
+      '.....',
+      '.....',
+      '.....']]
+
+shapes = [S, Z, I, O, J, L, T, X]
+shape_colors = [(123, 104, 238), (0, 255, 255), (0, 255, 127), (238, 130, 238), (255, 255, 216), (255, 0, 255),
+                (255, 179, 71), (0, 0, 0)]
+#index 0 - 7 represent shape
 
 
 class Piece(object):
@@ -219,9 +226,14 @@ def check_lost(positions):
 
 def get_shape():
     global shapes, shape_colors
+    rand_num = random.randrange(6)
 
-    return Piece(5, 0, random.choice(shapes))
+    return Piece(5, 0, shapes[rand_num])
 
+def get_blank():
+    global shapes, shape_colors
+
+    return Piece(5, 0, shapes[7])
 
 def draw_text_middle(text, size, color, surface):
     font = pygame.font.SysFont('comicsans', size, bold=True)
@@ -278,9 +290,29 @@ def draw_next_shape(shape, surface):
 
     surface.blit(label, (sx + 10, sy- 30))
 
+def draw_hold_shape(shape, surface):
+    font = pygame.font.SysFont('comicsans', 30)
+    label = font.render('Hold Shape', 1, (255,255,255))
+
+    sx = top_left_x + play_width - 500
+    sy = top_left_y + play_height/2 - 100
+    format = shape.shape[shape.rotation % len(shape.shape)]
+
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (sx + j*30, sy + i*30, 30, 30), 0)
+
+    surface.blit(label, (sx + 10, sy- 30))
 
 def draw_window(surface):
     surface.fill((0,0,0))
+
+    background_image = pygame.image.load("donutwaves.png").convert()
+    #draw background first so its underneath the rest
+    surface.blit(background_image, [0,0])
+
     # Tetris Title
     font = pygame.font.SysFont('comicsans', 60)
     label = font.render('TETRIS', 1, (255,255,255))
@@ -312,10 +344,12 @@ def main():
     locked_positions = {}  # (x,y):(255,0,0)
     grid = create_grid(locked_positions)
 
+    hold_toggle = False
     change_piece = False
     run = True
     current_piece = get_shape()
     next_piece = get_shape()
+    hold_piece = get_blank()
     clock = pygame.time.Clock()
     fall_time = 0       # in secs
     game_time = 0       # in secs
@@ -391,6 +425,17 @@ def main():
                             pause = False
 
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_h:
+                    current_piece.y = 0             # start hold piece at the top of window
+                    hold_toggle = not hold_toggle
+                    if hold_toggle:
+                        hold_piece = current_piece
+                        current_piece = next_piece
+                        next_piece = get_shape()
+                    else:
+                        current_piece = hold_piece
+                        hold_piece = get_blank()
+
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1
                     if not valid_space(current_piece, grid):
@@ -440,6 +485,7 @@ def main():
 
         draw_window(win)
         draw_next_shape(next_piece, win)
+        draw_hold_shape(hold_piece, win)
         pygame.display.update()
 
 
