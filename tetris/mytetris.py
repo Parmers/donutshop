@@ -177,7 +177,7 @@ class Piece(object):
 
 
 def create_grid(locked_positions={}):
-    grid = [[(0,0,0) for x in range(10)] for x in range(20)]
+    grid = [[(78, 43, 33) for x in range(10)] for x in range(20)]
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -204,7 +204,7 @@ def convert_shape_format(shape):
 
 
 def valid_space(shape, grid):
-    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
+    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (78, 43, 33)] for i in range(20)]
     accepted_positions = [j for sub in accepted_positions for j in sub]
     formatted = convert_shape_format(shape)
 
@@ -257,7 +257,7 @@ def clear_rows(grid, locked, score):
     inc = 0
     for i in range(len(grid)-1,-1,-1):
         row = grid[i]
-        if (0, 0, 0) not in row:
+        if (78, 43, 33) not in row:
             inc += 1
             # add positions to remove from locked
             ind = i
@@ -320,12 +320,12 @@ def draw_score(surface, score):
 
 
 def draw_window(surface, background_image):
-    surface.fill((0,0,0))
+    surface.fill((78, 43, 33))
     surface.blit(background_image, [0, 0])
 
     # Tetris Title
     font = pygame.font.SysFont('comicsans', 60)
-    label = font.render('TETRIS', 1, (255,255,255))
+    label = font.render('TETRIS ON SPRINKLES', 1, (78, 43, 33))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
 
@@ -515,7 +515,7 @@ def main():
 def main_menu():
     run = True
     while run:
-        win.fill((0,0,0))
+        win.fill((78, 43, 33))
         draw_text_middle('Press any key to begin.', 60, (255, 255, 255), win)
         pygame.display.update()
         for event in pygame.event.get():
