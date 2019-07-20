@@ -1,5 +1,6 @@
 import pygame
 import random
+# import time
 
 """
 10 x 20 square grid
@@ -58,6 +59,33 @@ I = [['..0..',
 O = [['.....',
       '.....',
       '.00..',
+      '.00..',
+      '.....']]
+
+D = [['.....',          # special donut shape
+      '.000.',
+      '.0.0.',
+      '.000.',
+      '.....']]
+
+U = [['.....',          # special U shape
+      '.0.0.',
+      '.000.',
+      '.....',
+      '.....'],
+     ['.....',
+      '..00.',
+      '..0..',
+      '..00.',
+      '.....'],
+     ['.....',
+      '.....',
+      '.000.',
+      '.0.0.',
+      '.....'],
+     ['.....',
+      '.00..',
+      '..0..',
       '.00..',
       '.....']]
 
@@ -124,8 +152,8 @@ T = [['.....',
       '..0..',
       '.....']]
 
-shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shapes = [S, Z, I, O, D, J, L, T]
+shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 0, 0), (255, 255, 0),(128, 0, 128), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 # index 0 - 6 represent shape
 
 
@@ -268,8 +296,17 @@ def draw_window(surface):
     pygame.draw.rect(surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5)
     # pygame.display.update()
 
+#
+# def countdown(x):
+#     while x > 0:
+#         x = x-1
+#         if x == 0:
+#             print("NEX LEVEL--------------------------------")
+#             return 0
+
 
 def main():
+
     global grid
 
     locked_positions = {}  # (x,y):(255,0,0)
@@ -280,17 +317,56 @@ def main():
     current_piece = get_shape()
     next_piece = get_shape()
     clock = pygame.time.Clock()
-    fall_time = 0
+    fall_time = 0       # in secs
+    game_time = 0       # in secs
+
 
     while run:
         fall_speed = 0.27
 
         grid = create_grid(locked_positions)
         fall_time += clock.get_rawtime()
-        clock.tick()
+        # clock.tick()
+
+
+
+        ######## SPEED UP !!! zooooooooom ########
+
+
+        # countdown = 1000
+        # while countdown > 0:
+        #     countdown -= 1
+        #     print(countdown)
+        #     if countdown == 0:
+        #         fall_speed = fall_speed + 0.01
+        #         # countdown = 20
+
+
+        milli = clock.tick()  # clock.tick() returns how many milliseconds passed since the last time it was called
+        # So it tells you how long the while loop took
+        seconds = milli / 1000
+        game_time += seconds
+        print("TIME: ", game_time)  # So you can see that this works
+
+
+        if game_time > 10:
+            fall_speed -= 0.05
+            draw_text_middle('THINK FASSSST', 40, (255, 255, 255), win)
+
+        if game_time > 20:
+            fall_speed -= 0.05
+
+        if game_time > 30:
+            fall_speed -= 0.05
+
+        if game_time > 40:
+            fall_speed -= 0.05
+
+
+        print("fall speed :", fall_speed)
 
         # PIECE FALLING CODE
-        if fall_time/1000 >= fall_speed:
+        if fall_time/(1000) >= fall_speed:
             fall_time = 0
             current_piece.y += 1
             if not (valid_space(current_piece, grid)) and current_piece.y > 0:
@@ -365,6 +441,7 @@ def main():
         draw_window(win)
         draw_next_shape(next_piece, win)
         pygame.display.update()
+
 
         # Check if user lost
         if check_lost(locked_positions):
