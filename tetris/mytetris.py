@@ -522,10 +522,26 @@ def main_menu():
     # Declare musicOne on 531 after run=True
     musicOn = False
 
+    donut_names = ["cherry", "mint", "choccy", "purple", "white", "orange", "pink", "lemon", "green"]
+    donuts = []
+
+    for i in range(0, len(donut_names)): #create list of donut sprites
+        donuts.append(pygame.image.load("donuts/" + donut_names[i] + "donut.png"))
+
+    width = donuts[0].get_width() + 26
+    height = donuts[0].get_height() + 15
+
+
     while run:
         win.fill((78, 43, 33))
+
+        for i in range(0, len(donut_names)):
+            for j in range(0, len(donut_names)):
+                win.blit(donuts[j], (width * i, height * j))
+
         draw_text_middle('Press any key to begin.', 60, (255, 255, 255), win)
         pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
